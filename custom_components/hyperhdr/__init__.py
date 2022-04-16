@@ -7,7 +7,7 @@ from contextlib import suppress
 import logging
 from typing import Any, cast
 
-from awesomeversion import AwesomeVersion
+
 from hyperhdr import client, const as hyperhdr_const
 
 from homeassistant.config_entries import ConfigEntry
@@ -146,19 +146,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     # Client won't connect? => Not ready.
-    if not hyperhdr_client:
-        raise ConfigEntryNotReady
-    version = await hyperhdr_client.async_sysinfo_version()
-    if version is not None:
-        with suppress(ValueError):
-            if AwesomeVersion(version) < AwesomeVersion(HYPERHDR_VERSION_WARN_CUTOFF):
-                _LOGGER.warning(
-                    "Using a HyperHDR server version < %s is not recommended -- "
-                    "some features may be unavailable or may not function correctly. "
-                    "Please consider upgrading: %s",
-                    HYPERHDR_VERSION_WARN_CUTOFF,
-                    HYPERHDR_RELEASES_URL,
-                )
+
 
     # Client needs authentication, but no token provided? => Reauth.
     auth_resp = await hyperhdr_client.async_is_auth_required()
